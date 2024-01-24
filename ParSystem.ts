@@ -68,27 +68,30 @@ export default class ParSystem extends Component {
         return this.nodeTemp || this.prefab;
     }
 
-    protected onLoad(): void {
-        this.nLife = 5;
-        this.nLifeVar = 1;
-        this.nGravity = 10;
-        this.nOpacity = 255;
-        this.nOpacityVar = 50;
-        this.nScale = 3;
-        this.nScaleVar = 1;
-        this.nMaxCnt = 3;
-        this.nInitX = 50;
-        this.nInitXVar = 50;
-        this.nInitY = 50;
-        this.nInitYVar = 50;
-        this.nVx = 0;
-        this.nVxVar = 50;
-        this.nVy = 0;
-        this.nVyVar = 50;
-        this.nRotation = 40;
-        this.nRotationVar = 20;
-        this.nEndScale = 6;
-    }
+    // protected onLoad(): void {
+    //     this.nLife = 3;
+    //     this.nLifeVar = 1;
+    //     this.nGravity = 10;
+    //     this.nOpacity = 255;
+    //     this.nOpacityVar = 50;
+    //     this.nScale = 2;
+    //     this.nScaleVar = 1;
+    //     this.nMaxCnt = 6;
+    //     this.nInitX = 0;
+    //     this.nInitXVar = 80;
+    //     this.nInitY = 0;
+    //     this.nInitYVar = 80;
+    //     this.nVx = 0;
+    //     this.nVxVar = 150;
+    //     this.nVy = 0;
+    //     this.nVyVar = 50;
+    //     this.nRotation = 20;
+    //     this.nRotationVar = 60;
+    //     this.nEndScale = 8;
+    //     this.nEndScaleVar = 2;
+    //     this.nEndOpacity = 100;
+    //     this.nEndOpacityVar = 50;
+    // }
 
     // 低刷新率
     bLowRefresh:boolean = true;
@@ -114,7 +117,9 @@ export default class ParSystem extends Component {
 
     private _createParNode(){
         if(this._arrUsedParNode.length >= this.nMaxCnt) return;
-        this._initParNode(this._getParNode());
+        let node = this._getParNode();
+        this._arrUsedParNode.push(node);
+        this._initParNode(node);
     }
 
     private _getParNode(): ParNode{
@@ -130,19 +135,20 @@ export default class ParSystem extends Component {
         com.sys = this;
         com.node.active = true;
         com.nLife = this._getRandom(this.nLife, this.nLifeVar);
-        (this.nOpacity != -1) && (com.opacity = this._getRandom(this.nOpacity, this.nOpacityVar));
-        (this.nEndOpacity != -1) && (com.nEndOpacity = this._getRandom(this.nEndOpacity, this.nEndOpacityVar));
-        if(this.nScale != -1){
+        (this.nOpacity != -1 || this.nOpacityVar) && (com.opacity = this._getRandom(this.nOpacity, this.nOpacityVar));
+        (this.nEndOpacity != -1 || this.nEndOpacityVar) && (com.nEndOpacity = this._getRandom(this.nEndOpacity, this.nEndOpacityVar));
+        if(this.nScale != -1 || this.nScaleVar){
             let nScale = this._getRandom(this.nScale, this.nScaleVar);
             com.node.setScale(v3(nScale, nScale, 1));
         }
 
-        (this.nEndScale != -1) && (com.nEndScale = this._getRandom(this.nEndScale, this.nEndScaleVar));
-        (this.nInitX || this.nInitY) && com.node.setPosition(this._getRandom(this.nInitX, this.nInitXVar), this._getRandom(this.nInitY, this.nInitYVar));
+        (this.nEndScale != -1 || this.nEndScaleVar) && (com.nEndScale = this._getRandom(this.nEndScale, this.nEndScaleVar));
+        (this.nInitX || this.nInitY || this.nInitXVar || this.nInitYVar) && com.node.setPosition(this._getRandom(this.nInitX, this.nInitXVar), this._getRandom(this.nInitY, this.nInitYVar));
 
-        this.nVx && (com.nSpeedX = this._getRandom(this.nVx, this.nVxVar));
-        this.nVy && (com.nSpeedY = this._getRandom(this.nVy, this.nVyVar));
+        (this.nVx || this.nVxVar) && (com.nSpeedX = this._getRandom(this.nVx, this.nVxVar));
+        (this.nVy || this.nVyVar) && (com.nSpeedY = this._getRandom(this.nVy, this.nVyVar));
         this.nGravity && (com.nGravity = this.nGravity);
+        (this.nRotation || this.nRotationVar) && (com.nAngelSec = this._getRandom(this.nRotation, this.nRotationVar));
     }
 
     recycleParNode(com: ParNode){

@@ -71,13 +71,13 @@ export default class ParNode extends Component{
 
         // 重力
         this._nGravity && (this.node.setPosition(this.node.position.x, this.node.position.y - ((this._nGravity * this._nCurLife * this._nCurLife)*0.5), this.node.position.z));
-        (this._nSpeedX || this._nSpeedY) && this.node.position.add3f(this._nSpeedX * nDelt, this._nSpeedY * nDelt, 0);
+        (this._nSpeedX || this._nSpeedY) && this.node.setPosition(this.node.position.x + this._nSpeedX * nDelt, this.node.position.y + this._nSpeedY * nDelt, 0);
     }
 
     clear(){
         this._nCurLife = 0;
         this._nLife = 0;
-
+        this.node.setPosition(v3(0, 0, 0));
         this.op.opacity = 255;
         this.node.angle = 0;
         this.node.setScale(v3(1, 1, 1));
@@ -92,6 +92,6 @@ export default class ParNode extends Component{
     onDie(){
         this.node.active = false;
         this.clear();
-        this.sys.recycleParNode(this);
+        this._sys.recycleParNode(this);
     }
 }
